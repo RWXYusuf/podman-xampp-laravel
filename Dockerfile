@@ -15,7 +15,7 @@ RUN apt-get update --fix-missing && \
   apt-get -yq install openssh-server supervisor && \
   # Few handy utilities which are nice to have
   apt-get -y install nano vim less --no-install-recommends && \
-  apt-get clean && /
+  apt-get clean && \
   apt-get install -y git libzip-dev zip unzip npm
 
 RUN curl -Lo xampp-linux-installer.run $XAMPP_URL && \
@@ -31,7 +31,7 @@ RUN curl -Lo xampp-linux-installer.run $XAMPP_URL && \
   echo "IncludeOptional /opt/lampp/apache2/conf.d/*.conf" >> /opt/lampp/etc/httpd.conf && \ 
   # Setting up php env variable 
   echo "opt/lampp/bin/php" >> /etc/environment && \
-  ln -s /opt/lampp/bin/php /usr/local/bin/php
+  ln -s /opt/lampp/bin/php /usr/local/bin/php && \
   # Create a /www folder and a symbolic link to it in /opt/lampp/htdocs. It'll be accessible via http://localhost:[port]/www/
   # This is convenient because it doesn't interfere with xampp, phpmyadmin or other tools in /opt/lampp/htdocs
   mkdir /www && \
@@ -39,11 +39,12 @@ RUN curl -Lo xampp-linux-installer.run $XAMPP_URL && \
   # SSH server
   mkdir -p /var/run/sshd && \
   # Allow root login via password
-  sed -ri 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
+  sed -ri 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config && \
   # Download composer and artisan for laravel development
   curl https://getcomposer.org/installer | php && \
   mv composer.phar /usr/local/bin/composer && \
   composer global require laravel/installer
+  
 # copy supervisor config file to start openssh-server
 COPY supervisord-openssh-server.conf /etc/supervisor/conf.d/supervisord-openssh-server.conf
 
