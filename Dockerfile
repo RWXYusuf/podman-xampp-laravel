@@ -15,7 +15,8 @@ RUN apt-get update --fix-missing && \
   apt-get -yq install openssh-server supervisor && \
   # Few handy utilities which are nice to have
   apt-get -y install nano vim less --no-install-recommends && \
-  apt-get clean
+  apt-get clean && /
+  apt-get install -y git libzip-dev zip unzip npm
 
 RUN curl -Lo xampp-linux-installer.run $XAMPP_URL && \
   chmod +x xampp-linux-installer.run && \
