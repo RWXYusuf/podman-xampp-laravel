@@ -26,8 +26,11 @@ RUN curl -Lo xampp-linux-installer.run $XAMPP_URL && \
   # Enable error display in php
   sed -i.bak s'/display_errors=Off/display_errors=On/g' /opt/lampp/etc/php.ini && \
   # Enable includes of several configuration files
-  mkdir /opt/lampp/apache2/conf.d && \
-  echo "IncludeOptional /opt/lampp/apache2/conf.d/*.conf" >> /opt/lampp/etc/httpd.conf && \
+  mkdir /opt/lampp/apache2/conf.d && \ 
+  echo "IncludeOptional /opt/lampp/apache2/conf.d/*.conf" >> /opt/lampp/etc/httpd.conf && \ 
+  # Setting up php env variable 
+  echo "opt/lampp/bin/php" >> /etc/environment && \
+  ln -s /opt/lampp/bin/php /usr/local/bin/php
   # Create a /www folder and a symbolic link to it in /opt/lampp/htdocs. It'll be accessible via http://localhost:[port]/www/
   # This is convenient because it doesn't interfere with xampp, phpmyadmin or other tools in /opt/lampp/htdocs
   mkdir /www && \
@@ -36,7 +39,10 @@ RUN curl -Lo xampp-linux-installer.run $XAMPP_URL && \
   mkdir -p /var/run/sshd && \
   # Allow root login via password
   sed -ri 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
-
+  # Download composer and artisan for laravel development
+  curl https://getcomposer.org/installer | php && \
+  mv composer.phar /usr/local/bin/composer && \
+  composer global require laravel/installer
 # copy supervisor config file to start openssh-server
 COPY supervisord-openssh-server.conf /etc/supervisor/conf.d/supervisord-openssh-server.conf
 
@@ -48,5 +54,5 @@ VOLUME [ "/var/log/mysql/", "/var/log/apache2/", "/www", "/opt/lampp/apache2/con
 EXPOSE 3306
 EXPOSE 22
 EXPOSE 80
-
+EXPOSE 8000
 CMD ["sh", "/startup.sh"]
