@@ -1,0 +1,10 @@
+FROM tomsik68/xampp:latest
+
+RUN apt-get install tmux
+RUN bash -c "echo '/opt/lampp/bin/php' >> /etc/environment"
+RUN bash -c "ln -s /opt/lampp/bin/php /usr/local/bin/php"
+RUN bash -c "curl https://getcomposer.org/installer | php"
+RUN bash -c "mv composer.phar /usr/local/bin/composer"
+RUN bash -c "composer global require laravel/installer"
+
+EXPOSE 8000
